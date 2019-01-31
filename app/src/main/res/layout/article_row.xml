@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+   xmlns:app="http://schemas.android.com/apk/res-auto"
+   xmlns:tools="http://schemas.android.com/tools"
+   android:layout_width="match_parent"
+   android:layout_height="wrap_content"
+   android:padding="10dp">
+
+   <TextView
+      android:id="@+id/articleTitle"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:ellipsize="end"
+      android:maxLines="2"
+      android:textColor="#444"
+      android:textSize="16sp"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      tools:text="This is the article title that may span up to two lines" />
+
+   <TextView
+      android:id="@+id/articleAuthorPlusRelativeTimestamp"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:layout_constraintLeft_toLeftOf="@id/articleTitle"
+      app:layout_constraintTop_toBottomOf="@id/articleTitle"
+      tools:text="Author Name - 2 days ago" />
+
+</android.support.constraint.ConstraintLayout>
