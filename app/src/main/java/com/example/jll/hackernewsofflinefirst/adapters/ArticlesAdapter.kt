@@ -1,6 +1,7 @@
 package com.example.jll.hackernewsofflinefirst.adapters
 
 import android.content.Context
+import android.support.constraint.ConstraintLayout
 import android.support.v7.widget.RecyclerView
 import android.text.format.DateUtils
 import android.view.LayoutInflater
@@ -12,7 +13,7 @@ import com.example.jll.hackernewsofflinefirst.models.Article
 import com.example.jll.hackernewsofflinefirst.utils.Utils.convertUtcDatetimeToDate
 import java.util.*
 
-class ArticlesAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ArticlesAdapter(private val onClickCb: (String) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
   private val items: ArrayList<Article> = arrayListOf()
 
@@ -40,10 +41,13 @@ class ArticlesAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     )
 
     vHolder.authorTimestamp.text = context.resources.getString(R.string.article_detail_text, author, relativeTime)
-
+    vHolder.container.setOnClickListener {
+      onClickCb(article.getArticleUrl())
+    }
   }
 
   class ArticleVH(view: View) : RecyclerView.ViewHolder(view) {
+    val container: ConstraintLayout = view.findViewById(R.id.articleContainer)
     val title: TextView = view.findViewById(R.id.articleTitle)
     val authorTimestamp: TextView = view.findViewById(R.id.articleAuthorPlusRelativeTimestamp)
     val context: Context = title.context
@@ -53,11 +57,6 @@ class ArticlesAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     items.clear()
     items.addAll(articles)
     notifyDataSetChanged()
-  }
-
-  fun removeItem(position: Int) {
-    items.removeAt(position)
-    notifyItemRemoved(position)
   }
 
   fun getItems(): List<Article> {

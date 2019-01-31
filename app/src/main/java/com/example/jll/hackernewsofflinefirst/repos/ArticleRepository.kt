@@ -5,17 +5,41 @@ import com.example.jll.hackernewsofflinefirst.dao.ArticlesDao
 import com.example.jll.hackernewsofflinefirst.models.Article
 import com.example.jll.hackernewsofflinefirst.network.ArticlesApi
 import io.reactivex.Observable
+import java.io.IOException
+import java.net.InetSocketAddress
+import java.net.Socket
 import javax.inject.Inject
 
 
 class ArticleRepository @Inject constructor(private val articlesApi: ArticlesApi,
                                             private val articlesDao: ArticlesDao) {
 
-  fun getArticles(): Observable<List<Article>> {
+  suspend fun getArticles(): Observable<List<Article>> {
+
     val apiObservable = getArticlesFromApi()
     val dbObservable = getArticlesFromDb()
 
-    return Observable.concatArrayEager(apiObservable, dbObservable)
+    return if (hasInternetConnection()) {
+      Observable.concatArrayEager(apiObservable, dbObservable)
+    } else {
+      dbObservable
+    }
+
+  }
+
+  @WorkerThread
+  private suspend fun hasInternetConnection(): Boolean {
+    return try {
+      val timeoutMs = 800
+      val socket = Socket()
+      val socketAddress = InetSocketAddress("8.8.8.8", 53)
+
+      socket.connect(socketAddress, timeoutMs)
+      socket.close()
+      true
+    } catch (e: IOException) {
+      false
+    }
   }
 
   @WorkerThread

@@ -4,8 +4,6 @@ import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
-import android.support.annotation.NonNull
 import com.example.jll.hackernewsofflinefirst.models.Article
 import com.example.jll.hackernewsofflinefirst.repos.ArticleRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -47,7 +45,7 @@ class ArticlesViewModel @Inject constructor(
     return refreshFinishes
   }
 
-  fun fetchArticles() {
+  fun fetchArticles() = scope.launch(Dispatchers.IO) {
 
     indexObserver = object : DisposableObserver<List<Article>>() {
       override fun onComplete() {
@@ -64,6 +62,7 @@ class ArticlesViewModel @Inject constructor(
       }
 
       override fun onError(e: Throwable) {
+        System.out.println(e.localizedMessage)
         articlesError.postValue(e.message)
       }
     }

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+   xmlns:app="http://schemas.android.com/apk/res-auto"
+   xmlns:tools="http://schemas.android.com/tools"
+   android:layout_width="match_parent"
+   android:layout_height="match_parent"
+   tools:context=".viewmodels.DetailFragment">
+
+
+   <android.support.design.widget.AppBarLayout
+      android:id="@+id/simpleNav"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:elevation="0dp"
+      app:layout_constraintTop_toTopOf="parent">
+
+      <android.support.v7.widget.Toolbar
+         android:id="@+id/settingsToolbar"
+         android:layout_width="match_parent"
+         android:layout_height="?attr/actionBarSize"
+         app:contentInsetStart="0dp">
+
+
+         <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+               android:id="@+id/goBackBtn"
+               android:layout_width="30dp"
+               android:layout_height="30dp"
+               android:layout_marginLeft="6dp"
+               android:src="@drawable/ic_return"
+               android:tint="#fff"
+               app:layout_constraintBottom_toBottomOf="parent"
+               app:layout_constraintLeft_toLeftOf="parent"
+               app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+               android:id="@+id/simpleNavLabel"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_marginLeft="3dp"
+               android:text="Back"
+               android:textColor="#fff"
+               android:textSize="20sp"
+               app:layout_constraintBottom_toBottomOf="parent"
+               app:layout_constraintLeft_toRightOf="@id/goBackBtn"
+               app:layout_constraintTop_toTopOf="parent" />
+
+
+         </android.support.constraint.ConstraintLayout>
+
+
+      </android.support.v7.widget.Toolbar>
+
+
+   </android.support.design.widget.AppBarLayout>
+
+
+   <WebView
+      android:id="@+id/detailWebView"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/simpleNav" />
+
+</android.support.constraint.ConstraintLayout>

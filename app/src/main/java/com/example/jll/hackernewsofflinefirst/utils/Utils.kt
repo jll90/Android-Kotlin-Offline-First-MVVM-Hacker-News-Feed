@@ -11,4 +11,6 @@ object Utils {
     serverSdf.timeZone = utcZone
     return serverSdf.parse(utcDatetime)
   }
+
+  val DETAIL_FRAGMENT_URL = "detailFragmentUrl"
 }

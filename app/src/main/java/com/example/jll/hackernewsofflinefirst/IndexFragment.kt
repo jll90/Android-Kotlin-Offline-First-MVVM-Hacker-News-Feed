@@ -16,6 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.jll.hackernewsofflinefirst.adapters.ArticlesAdapter
 import com.example.jll.hackernewsofflinefirst.models.Article
+import com.example.jll.hackernewsofflinefirst.other.FragmentNavigationInterface
 import com.example.jll.hackernewsofflinefirst.other.SwipeToDeleteHandler
 import com.example.jll.hackernewsofflinefirst.viewmodels.ArticlesViewModel
 import com.example.jll.hackernewsofflinefirst.viewmodels.ArticlesViewModelFactory
@@ -41,7 +42,6 @@ class IndexFragment : Fragment() {
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                             savedInstanceState: Bundle?): View? {
-    // Inflate the layout for this fragment
     mArticlesVM = activity?.run {
       ViewModelProviders.of(this, mArticlesVMFactory).get(ArticlesViewModel::class.java)
     } ?: throw Exception("Invalid activity")
@@ -85,9 +85,16 @@ class IndexFragment : Fragment() {
     }
   }
 
+  private fun navToDetail(): (String) -> Unit {
+    return fun(url: String) {
+      val activityListener = context as FragmentNavigationInterface
+      activityListener.goToDetail(url)
+    }
+  }
+
   private fun setUpRecyclerView() {
     mLayoutManager = LinearLayoutManager(context!!)
-    mAdapter = ArticlesAdapter()
+    mAdapter = ArticlesAdapter(navToDetail())
     mRecyclerView = articlesRV
 
     mRecyclerView.addItemDecoration(DividerItemDecoration(mRecyclerView.context, mLayoutManager.orientation))
@@ -103,29 +110,9 @@ class IndexFragment : Fragment() {
   private fun enableSwipeToDeleteAndUndo() {
     val swipeToDeleteHandler = object : SwipeToDeleteHandler(context!!) {
       override fun onSwiped(viewHolder: RecyclerView.ViewHolder, i: Int) {
-
-
         val position = viewHolder.adapterPosition
         val article = mAdapter.getItems()[position]
-        //mAdapter.removeItem(position)
         mArticlesVM.deleteArticle(article)
-
-        /*
-        val snackbar = Snackbar
-          .make(coordinatorLayout, "Item was removed from the list.", Snackbar.LENGTH_LONG)
-        snackbar.setAction("UNDO", object : View.OnClickListener() {
-          fun onClick(view: View) {
-
-            mAdapter.restoreItem(item, position)
-            recyclerView.scrollToPosition(position)
-          }
-        })
-
-        snackbar.setActionTextColor(Color.YELLOW)
-        snackbar.show()
-
-        */
-
       }
     }
 
@@ -138,9 +125,9 @@ class IndexFragment : Fragment() {
     mAdapter.refreshItems(articles)
   }
 
-
-  override fun onPause() {
-    super.onPause()
+  override fun onDestroy() {
+    super.onDestroy()
+    mArticlesVM.disposeElements()
   }
 
 }
