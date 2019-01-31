@@ -1,5 +1,6 @@
 package com.example.jll.hackernewsofflinefirst.repos
 
+import android.support.annotation.WorkerThread
 import com.example.jll.hackernewsofflinefirst.dao.ArticlesDao
 import com.example.jll.hackernewsofflinefirst.models.Article
 import com.example.jll.hackernewsofflinefirst.network.ArticlesApi
@@ -17,8 +18,9 @@ class ArticleRepository @Inject constructor(private val articlesApi: ArticlesApi
     return Observable.concatArrayEager(apiObservable, dbObservable)
   }
 
-  fun markAsDeleted(article: Article) {
-    return articlesDao.markAsDeleted(article.objectID)
+  @WorkerThread
+  suspend fun markAsDeleted(article: Article) {
+    articlesDao.markAsDeleted(article.objectID)
   }
 
   private fun getArticlesFromApi(): Observable<List<Article>> {

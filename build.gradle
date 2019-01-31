@@ -10,6 +10,7 @@ buildscript {
     ext.rxjava2_adapter_version = '2.3.0'
     ext.rxjava2_version = '2.1.0'
     ext.rxandroid_version = '2.1.0'
+    ext.coroutines_version = '0.30.2'
     repositories {
         google()
         jcenter()

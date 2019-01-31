@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.annotation.NonNull
+import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
@@ -23,10 +24,11 @@ class MainActivity : AppCompatActivity() {
 
   @Inject
   lateinit var mArticlesVMFactory: ArticlesViewModelFactory
-  lateinit var mArticlesVM: ArticlesViewModel
-  lateinit var mLayoutManager: LinearLayoutManager
-  lateinit var mAdapter: ArticlesAdapter
-  lateinit var mRecyclerView: RecyclerView
+  private lateinit var mArticlesVM: ArticlesViewModel
+  private lateinit var mLayoutManager: LinearLayoutManager
+  private lateinit var mAdapter: ArticlesAdapter
+  private lateinit var mRecyclerView: RecyclerView
+  private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -35,6 +37,11 @@ class MainActivity : AppCompatActivity() {
     AndroidInjection.inject(this)
 
     mArticlesVM = ViewModelProviders.of(this, mArticlesVMFactory).get(ArticlesViewModel::class.java)
+
+    setUpSwipeRefresh()
+    setUpRecyclerView()
+    enableSwipeToDeleteAndUndo()
+
     mArticlesVM.fetchArticles()
 
     mArticlesVM.articlesResult().observe(this,
@@ -48,6 +55,29 @@ class MainActivity : AppCompatActivity() {
       }
     )
 
+    mArticlesVM.refreshFinishes().observe(this,
+      Observer<Boolean> {
+        mSwipeRefreshLayout.isRefreshing = false
+      }
+    )
+
+    loadFirstFragment()
+  }
+
+  fun loadFirstFragment(){
+    val ft = supportFragmentManager.beginTransaction()
+    ft.replace(R.id.mainFragmentContainer, IndexFragment())
+    ft.commit()
+  }
+
+  private fun setUpSwipeRefresh(){
+    mSwipeRefreshLayout = swipeRefreshLayout
+    mSwipeRefreshLayout.setOnRefreshListener {
+      mArticlesVM.fetchArticles()
+    }
+  }
+
+  private fun setUpRecyclerView(){
     mLayoutManager = LinearLayoutManager(this)
     mAdapter = ArticlesAdapter()
     mRecyclerView = articlesRV
@@ -59,13 +89,12 @@ class MainActivity : AppCompatActivity() {
       adapter = mAdapter
     }
 
-    enableSwipeToDeleteAndUndo()
   }
 
 
   private fun enableSwipeToDeleteAndUndo() {
     val swipeToDeleteHandler = object : SwipeToDeleteHandler(this) {
-      override fun onSwiped(@NonNull viewHolder: RecyclerView.ViewHolder, i: Int) {
+      override fun onSwiped(viewHolder: RecyclerView.ViewHolder, i: Int) {
 
 
         val position = viewHolder.adapterPosition

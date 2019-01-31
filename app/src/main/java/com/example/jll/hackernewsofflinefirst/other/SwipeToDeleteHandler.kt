@@ -53,7 +53,7 @@ abstract class SwipeToDeleteHandler internal constructor(internal var mContext: 
     val isCancelled = dX == 0f && !isCurrentlyActive
 
     if (isCancelled) {
-      clearCanvas(c, itemView.right + dX, itemView.top as Float, itemView.right as Float, itemView.bottom as Float)
+      clearCanvas(c, itemView.right + dX, itemView.top.toFloat(), itemView.right.toFloat(), itemView.bottom.toFloat())
       super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
       return
     }

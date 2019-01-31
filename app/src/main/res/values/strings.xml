@@ -1,3 +1,7 @@
 <resources>
    <string name="app_name">HackerNewsOfflineFirst</string>
+   <string name="article_detail_text">%1$s - %2$s</string>
+
+   <!-- TODO: Remove or change this placeholder text -->
+   <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
