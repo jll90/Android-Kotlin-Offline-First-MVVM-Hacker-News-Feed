@@ -34,9 +34,9 @@ class MainActivity : AppCompatActivity() {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
 
-    AndroidInjection.inject(this)
+ //   AndroidInjection.inject(this)
 
-    mArticlesVM = ViewModelProviders.of(this, mArticlesVMFactory).get(ArticlesViewModel::class.java)
+  /*  mArticlesVM = ViewModelProviders.of(this, mArticlesVMFactory).get(ArticlesViewModel::class.java)
 
     setUpSwipeRefresh()
     setUpRecyclerView()
@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
       Observer<Boolean> {
         mSwipeRefreshLayout.isRefreshing = false
       }
-    )
+    ) */
 
     loadFirstFragment()
   }
@@ -69,6 +69,8 @@ class MainActivity : AppCompatActivity() {
     ft.replace(R.id.mainFragmentContainer, IndexFragment())
     ft.commit()
   }
+
+  /*
 
   private fun setUpSwipeRefresh(){
     mSwipeRefreshLayout = swipeRefreshLayout
@@ -129,11 +131,11 @@ class MainActivity : AppCompatActivity() {
   fun refreshRecyclerView(articles: List<Article>) {
     mAdapter.refreshItems(articles)
   }
-
-
+  */
+/*
   override fun onDestroy() {
     mArticlesVM.disposeElements()
     super.onDestroy()
-  }
+  } */
 
 }
