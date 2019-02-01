@@ -11,6 +11,7 @@ The app has been tested on API 16 using Android Studio's emulator, and on real d
 ## Potential enhancements
 * Unit testing
 * A swipeable intro explaining how to use the app
+* Better feedback when unable to connect to the internet through snackbars, for example
 
 ## On third-party libraries
 Dagger2, RxJava2, Retrofit2, and Kotlin coroutines enjoy full support from Google and the community. It's good to leverage these as they have been battle tested.
