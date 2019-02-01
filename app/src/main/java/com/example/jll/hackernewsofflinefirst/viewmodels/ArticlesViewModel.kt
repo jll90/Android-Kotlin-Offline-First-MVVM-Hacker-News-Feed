@@ -1,9 +1,9 @@
 package com.example.jll.hackernewsofflinefirst.viewmodels
 
-import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.ViewModel
 import com.example.jll.hackernewsofflinefirst.models.Article
 import com.example.jll.hackernewsofflinefirst.repos.ArticleRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -18,20 +18,48 @@ import javax.inject.Inject
 import kotlin.coroutines.experimental.CoroutineContext
 
 class ArticlesViewModel @Inject constructor(
-  private val articlesRepository: ArticleRepository,
-  private val app: Application
-) : AndroidViewModel(app) {
+  private val articlesRepository: ArticleRepository
+) : ViewModel() {
 
-  private var articlesResult: MutableLiveData<List<Article>> = MutableLiveData()
-  private var articlesError: MutableLiveData<String> = MutableLiveData()
+  private val articlesResult: MutableLiveData<List<Article>> = MutableLiveData()
+  private val articlesError: MutableLiveData<String> = MutableLiveData()
+  private val refreshFinishes: MutableLiveData<Boolean> = MutableLiveData()
+  private val rvScroll: MutableLiveData<Int> = MutableLiveData()
+  private val showNoData: MediatorLiveData<Boolean> = MediatorLiveData()
+  private val repoLoading: MutableLiveData<Boolean> = MutableLiveData()
   private lateinit var indexObserver: DisposableObserver<List<Article>>
-  private var refreshFinishes: MutableLiveData<Boolean> = MutableLiveData()
+
+  init {
+    articlesResult.value = listOf()
+    rvScroll.value = 0
+    repoLoading.value = false
+
+    showNoData.addSource(articlesResult, {
+      showNoData.value = !repoLoading.value!! && it!!.count() == 0
+    })
+
+    showNoData.addSource(repoLoading, {
+      showNoData.value = !it!! && articlesResult.value!!.count() == 0
+    })
+  }
 
   private var parentJob = Job()
   private val coroutineContext: CoroutineContext
     get() = parentJob + Dispatchers.Main
 
   private val scope = CoroutineScope(coroutineContext)
+
+  fun getRvScroll(): Int {
+    return rvScroll.value!!
+  }
+
+  fun showNoData(): LiveData<Boolean> {
+    return showNoData
+  }
+
+  fun setRvScroll(scroll: Int) {
+    rvScroll.value = scroll
+  }
 
   fun articlesResult(): LiveData<List<Article>> {
     return articlesResult
@@ -45,11 +73,15 @@ class ArticlesViewModel @Inject constructor(
     return refreshFinishes
   }
 
+
   fun fetchArticles() = scope.launch(Dispatchers.IO) {
+
+    repoLoading.postValue(true)
 
     indexObserver = object : DisposableObserver<List<Article>>() {
       override fun onComplete() {
-        refreshFinishes.postValue(false)
+        refreshFinishes.value = false
+        repoLoading.value = false
       }
 
       override fun onNext(articles: List<Article>) {
@@ -62,7 +94,6 @@ class ArticlesViewModel @Inject constructor(
       }
 
       override fun onError(e: Throwable) {
-        System.out.println(e.localizedMessage)
         articlesError.postValue(e.message)
       }
     }

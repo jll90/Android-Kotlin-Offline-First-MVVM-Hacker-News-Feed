@@ -51,8 +51,6 @@ class IndexFragment : Fragment() {
   override fun onStart() {
     super.onStart()
 
-    mArticlesVM = ViewModelProviders.of(this, mArticlesVMFactory).get(ArticlesViewModel::class.java)
-
     setUpSwipeRefresh()
     setUpRecyclerView()
     enableSwipeToDeleteAndUndo()
@@ -75,8 +73,24 @@ class IndexFragment : Fragment() {
         mSwipeRefreshLayout.isRefreshing = false
       }
     )
+
+    mArticlesVM.showNoData().observe(this,
+      Observer<Boolean> {
+        noDataContainer.visibility = if (it!!) View.VISIBLE else View.GONE
+        articlesRV.visibility = if (!it) View.VISIBLE else View.GONE
+      }
+    )
   }
 
+  override fun onPause() {
+    super.onPause()
+    mArticlesVM.setRvScroll(mLayoutManager.findFirstCompletelyVisibleItemPosition())
+  }
+
+  override fun onResume() {
+    super.onResume()
+    mLayoutManager.scrollToPosition(mArticlesVM.getRvScroll())
+  }
 
   private fun setUpSwipeRefresh() {
     mSwipeRefreshLayout = swipeRefreshLayout
@@ -116,12 +130,12 @@ class IndexFragment : Fragment() {
       }
     }
 
-    val itemTouchhelper = ItemTouchHelper(swipeToDeleteHandler)
-    itemTouchhelper.attachToRecyclerView(articlesRV)
+    val itemTouchHelper = ItemTouchHelper(swipeToDeleteHandler)
+    itemTouchHelper.attachToRecyclerView(articlesRV)
   }
 
 
-  fun refreshRecyclerView(articles: List<Article>) {
+  private fun refreshRecyclerView(articles: List<Article>) {
     mAdapter.refreshItems(articles)
   }
 
