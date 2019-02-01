@@ -8,7 +8,7 @@ Clone this project, open with Android Studio (or equivalent), install dependenci
 ## API Support
 The app has been tested on API 16 using Android Studio's emulator, and on real devices (APIs 21, 22 and 24)
 
-## Enhancements
+## Potential enhancements
 * Unit testing
 * A swipeable intro explaining how to use the app
 
