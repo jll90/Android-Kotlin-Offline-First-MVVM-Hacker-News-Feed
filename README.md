@@ -1,4 +1,4 @@
-# Hacker-News-Offline-First-MVVM-Demo
+# Android Kotlin, offline-first, MVVM HackerNewsFeed
 Offline-first, MVVM-architectured Android app demo showcasing Google's architectural components such as Room and ViewModels in Kotlin. Other technologies include: Dagger2, Retrofit2, RxJava2, and Kotlin coroutines.
 It also features both delete on-swipe and refreshing on-pull functionality, and the ability to remember which news articles have been marked as deleted with the help of SQLite.
 
