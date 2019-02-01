@@ -18,4 +18,4 @@ There is a library (or libraries) that implements swipes on Lists, but I decided
 
 ## Additional considerations
 * The DetailFragment showcases a toolbar that can be completely discarded as Android devices have a back button.
-* The app uses Kotlin coroutines (experimental) because I didn't want to bump Kotlin's version to at least 1.3
+* The app uses Kotlin coroutines (experimental version) because I didn't want to bump Kotlin's version to at least 1.3. Keep in mind that Kotlin coroutines are now fully supported.
